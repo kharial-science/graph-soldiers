@@ -1,5 +1,5 @@
-import Graph from "./Graph"
-import Vertex, { RawVertex } from "./Vertex"
+import Graph from "../Graph/Graph"
+import Vertex, { RawVertex } from "../Graph/Vertex"
 
 /**
  * Represents an edge between two vertices.

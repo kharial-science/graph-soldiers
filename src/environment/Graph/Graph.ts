@@ -158,4 +158,26 @@ export default class Graph {
         }
         return matrix
     }
+
+    /**
+     * Generates a random graph.
+     * Multiple edges may be created between two vertices.
+     *
+     * @param verticesNumber - The number of vertices of the graph.
+     */
+    public generateRandomGraph(verticesNumber: number) {
+        const vertices = []
+        for (let i = 0; i < verticesNumber; i++) {
+            vertices.push(new Vertex(`vertex-${i}`))
+        }
+        this.vertices = vertices
+
+        for (const vertex of this.vertices) {
+            const neighborsNumber = Math.floor(Math.random() * verticesNumber)
+            for (let i = 0; i < neighborsNumber; i++) {
+                const neighbor = Math.floor(Math.random() * verticesNumber)
+                this.addEdge(new Edge(vertex.id, this.vertices[neighbor].id))
+            }
+        }
+    }
 }
