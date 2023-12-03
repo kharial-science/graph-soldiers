@@ -48,6 +48,21 @@ export default class Environment extends Graph {
     }
 
     /**
+     * The current time of the environment.
+     * Le setup se fait à 0, le temps commence à 1.
+     */
+    public time: number = 0
+
+    /**
+     * Advances the time of the environment by one unit.
+     * And triggers all the creatures to output, input and activate.
+     */
+    public advanceTime(): void {
+        this.time++
+        // all creatures outputs inputs and activate
+    }
+
+    /**
      * Creates an environment from a graph.
      * @param graph - The graph to create the environment from.
      * @returns - The environment created from the graph.
