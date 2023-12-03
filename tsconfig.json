@@ -10,7 +10,8 @@
         "es2019",
         "es2020",
         "es2021",
-        "esnext"
+        "esnext",
+        "dom"
       ],
       "sourceMap": true,
       "resolveJsonModule": true,

@@ -27,13 +27,27 @@ export default class Graph {
     /**
      * Creates a graph.
      *
-     * @param {RawVertex[]} verticesIDs - The ids of the vertices of the graph.
-     * @param {RawEdge[]} rawEdges - The edges of the graph.
+     * @param vertices - The vertices of the graph.
+     * @param edges - The edges of the graph.
      */
-    constructor(verticesIDs: RawVertex[] = [], rawEdges: RawEdge[] = []) {
-        this.vertices = verticesIDs.map((id) => new Vertex(id))
-        for (const rawEdge of rawEdges) {
-            this.addEdge(new Edge(...rawEdge))
+    constructor(
+        vertices: (Vertex | RawVertex)[] = [],
+        edges: (Edge | RawEdge)[] = []
+    ) {
+        this.vertices = vertices.map((vertex) => {
+            if (vertex instanceof Vertex) {
+                return vertex
+            } else {
+                return new Vertex(vertex)
+            }
+        })
+
+        for (const edge of edges) {
+            if (edge instanceof Edge) {
+                this.addEdge(edge)
+            } else {
+                this.addEdge(new Edge(edge[0], edge[1]))
+            }
         }
     }
 
@@ -160,24 +174,42 @@ export default class Graph {
     }
 
     /**
+     * Creates a vertex name from its id.
+     *
+     * @param id - The id of the vertex.
+     * @returns The name of the vertex.
+     */
+    public static createVertexName(id: number): RawVertex {
+        return `vertex-${id.toString()}`
+    }
+
+    /**
      * Generates a random graph.
      * Multiple edges may be created between two vertices.
      *
      * @param verticesNumber - The number of vertices of the graph.
+     * @param edgeThreshold - The threshold that determines whether an edge is created between two vertices.
+     * A number between 0 and 1. The closer to 0, the more edges are created.
+     * @returns {Graph} The generated graph.
      */
-    public generateRandomGraph(verticesNumber: number) {
-        const vertices = []
-        for (let i = 0; i < verticesNumber; i++) {
-            vertices.push(new Vertex(`vertex-${i}`))
-        }
-        this.vertices = vertices
+    public static generateRandomGraph(
+        verticesNumber: number,
+        edgeThreshold: number
+    ): Graph {
+        const graph = new Graph()
 
-        for (const vertex of this.vertices) {
-            const neighborsNumber = Math.floor(Math.random() * verticesNumber)
-            for (let i = 0; i < neighborsNumber; i++) {
-                const neighbor = Math.floor(Math.random() * verticesNumber)
-                this.addEdge(new Edge(vertex.id, this.vertices[neighbor].id))
+        for (let i = 0; i < verticesNumber; i++) {
+            graph.addVertex(new Vertex(Graph.createVertexName(i)))
+        }
+
+        for (const vertex of graph.vertices) {
+            for (const neighbor of graph.vertices) {
+                if (Math.random() > edgeThreshold) {
+                    graph.addEdge(new Edge(vertex.id, neighbor.id))
+                }
             }
         }
+
+        return graph
     }
 }

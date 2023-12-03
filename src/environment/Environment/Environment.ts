@@ -1,6 +1,6 @@
-import { RawEdge } from "../Graph/Edge"
+import Edge, { RawEdge } from "../Graph/Edge"
 import Graph from "../Graph/Graph"
-import { RawVertex } from "../Graph/Vertex"
+import Vertex, { RawVertex } from "../Graph/Vertex"
 import EnvironmentEdge from "./EnvironmentEdge"
 import EnvironmentVertex, { RawEnvironmentVertex } from "./EnvironmentVertex"
 
@@ -16,18 +16,43 @@ export default class Environment extends Graph {
     /**
      * Creates an environment.
      *
-     * @param {EnvironmentVertex[]} vertices - The vertices of the environment.
+     * @param environmentVertices - The vertices of the environment.
+     * @param environmentEdges - The edges of the environment.
      */
-    constructor(rawVertices: RawEnvironmentVertex[], rawEdges: RawEdge[] = []) {
-        super()
+    constructor(
+        environmentVertices: (
+            | RawEnvironmentVertex
+            | EnvironmentVertex
+            | RawVertex
+            | Vertex
+        )[],
+        environmentEdges: (EnvironmentEdge | RawEdge | Edge)[] = []
+    ) {
+        const vertices = environmentVertices.map((vertex) => {
+            if (vertex instanceof EnvironmentVertex) {
+                return vertex
+            } else if (vertex instanceof Vertex) {
+                return new EnvironmentVertex(vertex)
+            } else if (vertex instanceof RawEnvironmentVertex) {
+                return new EnvironmentVertex(
+                    vertex.id,
+                    vertex.spice,
+                    vertex.creatures
+                )
+            } else {
+                return new EnvironmentVertex(vertex)
+            }
+        })
 
-        this.vertices = rawVertices.map(
-            (vertex) =>
-                new EnvironmentVertex(vertex.id, vertex.spice, vertex.creatures)
-        )
+        super(vertices, environmentEdges)
+    }
 
-        for (const rawEdge of rawEdges) {
-            super.addEdge(new EnvironmentEdge(...rawEdge))
-        }
+    /**
+     * Creates an environment from a graph.
+     * @param graph - The graph to create the environment from.
+     * @returns - The environment created from the graph.
+     */
+    public static createEnvironmentFromGraph(graph: Graph): Environment {
+        return new Environment(graph.vertices)
     }
 }

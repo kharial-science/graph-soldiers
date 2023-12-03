@@ -15,22 +15,29 @@ export default class EnvironmentVertex extends Vertex {
     /**
      * Creates a vertex in an environment.
      *
-     * @param {RawVertex} id - The ID of the vertex.
+     * @param {Vertex | RawVertex} vertex - The vertex to be created.
      * @param {SpiceInventory} spice - The spice inventory of the vertex.
      * @param {Creature[]} creatures - The creatures on the vertex.
      */
     constructor(
-        public id: RawVertex,
+        vertex: Vertex | RawVertex,
         spice: SpiceInventory = { dust: 0, powder: 0, crystal: 0 },
         creatures: Creature[] = []
     ) {
+        const id = vertex instanceof Vertex ? vertex.id : vertex
         super(id)
+
+        if (vertex instanceof Vertex) {
+            this.neighborsSource = vertex.neighborsSource
+            this.neighborsTarget = vertex.neighborsTarget
+        }
+
         this.spice = spice
         this.creatures = creatures
     }
 }
 
-export interface RawEnvironmentVertex {
+export class RawEnvironmentVertex {
     id: RawVertex
     spice: SpiceInventory
     creatures: Creature[]
