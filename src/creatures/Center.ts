@@ -1,4 +1,5 @@
 import Environment from "../environment/Environment/Environment"
+import random from "../utils/random"
 import Creature from "./Creature"
 
 /**
@@ -8,16 +9,16 @@ import Creature from "./Creature"
  * It can calculate its output based on its inputs.
  * It can evolve its input weights and can create new connections.
  */
-export default class Center {
+export default abstract class Center {
     /**
      * The id of the center.
      * Should be unique among the centers of a creature.
      */
-    public id: CenterID
+    public abstract id: CenterID
     /**
      * The type of the center.
      */
-    public readonly type: CenterType
+    public abstract readonly type: CenterType
 
     constructor(
         protected creature: Creature,
@@ -30,14 +31,14 @@ export default class Center {
     /**
      * Whether the center has an input.
      */
-    public hasInput: boolean
+    public abstract hasInput: boolean
     /**
      * The inputs of the center.
      * The keys are the names of the inputs.
      * The values are the weights of the inputs.
      * The weights are the values of the connections between the centers.
      */
-    public inputsWeights: CenterInputWeights
+    public abstract inputsWeights: CenterInputWeights
 
     /**
      * The last time unit when the inputs of the center were updated.
@@ -48,13 +49,8 @@ export default class Center {
      * The keys are the names of the inputs.
      * The values are the values of the inputs.
      */
-    public inputsValues: CenterInputValues
-
-    /**
-     * Retrieve the values of the inputs of the center.
-     * Update the time unit when the inputs were updated.
-     */
-    public retrieveInputsValues(): void {
+    private _inputsValues: CenterInputValues
+    public get inputsValues(): CenterInputValues {
         if (this.lastInputsUpdate === this.environment.time) {
             return
         }
@@ -62,7 +58,7 @@ export default class Center {
         Object.entries(this.inputsWeights).forEach(
             ([inputName, inputWeights]) => {
                 Object.entries(inputWeights).forEach(([centerID, weight]) => {
-                    this.inputsValues[inputName][centerID] =
+                    this._inputsValues[inputName][centerID] =
                         this.creature.centers[inputName].calculateOutput() *
                         weight
                 })
@@ -76,12 +72,10 @@ export default class Center {
      * Evolve the input weights of the center and create new connections.
      * The method should be implemented for each center type.
      */
-    public evolveInputWeights(
+    public abstract evolveInputWeights: (
         weightFactor: number,
         newConnectionFactor: number
-    ): void {
-        return
-    }
+    ) => void
 
     /**
      * The inner weights of the center.
@@ -105,14 +99,17 @@ export default class Center {
      * Evolve the inner weights of the center.
      * The method should be implemented for each center type.
      */
-    public evolveInnerWeights(weightFactor: number): void {
-        return
+    public evolveInnerWeights = (weightFactor: number) => {
+        Object.entries(this.innerWeights).forEach(([weightName]) => {
+            this.innerWeights[weightName] +=
+                weightFactor * this.innerWeightsFactors[weightName] * random()
+        })
     }
 
     /**
      * Whether the center has an output.
      */
-    public hasOutput: boolean
+    public abstract hasOutput: boolean
     /**
      * The last time unit when the output of the center was updated.
      */
@@ -120,24 +117,22 @@ export default class Center {
     /**
      * The output of the center.
      */
-    public outputValue: number
+    public abstract outputValue: number
     /**
      * The output of the center.
      * The value is the output of the center.
      * The method should be implemented for each center type.
      */
-    public calculateOutput(): number {
-        return 0
-    }
+    public abstract calculateOutput: () => number
 
     /**
      * The energy consumption of the center.
      */
-    public energyConsumptionPerTimeUnit: number
+    public abstract energyConsumptionPerTimeUnit: number
     /**
      * The energy consumption of the center per activation.
      */
-    public energyConsumptionPerActivation: number
+    public abstract energyConsumptionPerActivation: number
 }
 
 export type CenterID = `center-${string}`

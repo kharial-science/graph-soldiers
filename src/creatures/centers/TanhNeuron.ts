@@ -1,9 +1,9 @@
-import Environment from "../../environment/Environment/Environment"
 import Center, { CenterID, CenterInputWeights } from "../Center"
 import Creature from "../Creature"
 import random from "../../utils/random"
+import Environment from "../../environment/Environment/Environment"
 
-export default class SigmoidNeuron extends Center {
+export default class TanhNeuron extends Center {
     public readonly type = "neuron" as const
 
     constructor(
@@ -77,7 +77,7 @@ export default class SigmoidNeuron extends Center {
         const weightedInput =
             linearInput * this.innerWeights.gain + this.innerWeights.bias
 
-        const outputValue = 1 / (1 + Math.exp(-weightedInput))
+        const outputValue = Math.tanh(weightedInput)
         this.outputValue = outputValue
         this.lastOutputUpdate = this.environment.time
 

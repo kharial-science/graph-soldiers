@@ -1,8 +1,9 @@
 import Environment from "../../environment/Environment/Environment"
-import Center, { CenterID, CenterInputWeights } from "../Center"
+import EnvironmentEdge from "../../environment/Environment/EnvironmentEdge"
+import Center, { CenterID } from "../Center"
 import Creature from "../Creature"
 
-export default class TimeSensor extends Center {
+export default class CrystalSensor extends Center {
     public readonly type = "sensor" as const
 
     constructor(
@@ -18,27 +19,24 @@ export default class TimeSensor extends Center {
     public inputsWeights = {}
     public evolveInputWeights: () => void = () => {}
 
-    public innerWeights = {
-        frequency: 1,
-        phase: 0,
-    }
-    public innerWeightsFactors = {
-        frequency: 1,
-        phase: 1,
-    }
-
     public hasOutput = true
     public lastOutputUpdate: number = 0
-    public outputValue: number = 0
+    public _outputValue: number = 0
+    public get outputValue(): number {
+        return this._outputValue
+    }
+    public set outputValue(value: number) {
+        this.outputValue = value
+        this.lastOutputUpdate = this.environment.time
+    }
+
     public calculateOutput = (): number => {
         if (this.lastOutputUpdate === this.environment.time) {
             return this.outputValue
         }
 
-        this.outputValue = Math.sin(
-            this.environment.time * this.innerWeights.frequency +
-                this.innerWeights.phase
-        )
+        const creaturesNumber = this.creature.localization.creatures.length
+        this.outputValue = creaturesNumber
 
         return this.outputValue
     }
