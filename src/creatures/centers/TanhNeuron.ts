@@ -86,4 +86,6 @@ export default class TanhNeuron extends Center {
 
     public energyConsumptionPerTimeUnit = 1
     public energyConsumptionPerActivation = 0
+
+    public activate = () => {}
 }

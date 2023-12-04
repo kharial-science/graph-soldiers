@@ -133,6 +133,13 @@ export default abstract class Center {
      * The energy consumption of the center per activation.
      */
     public abstract energyConsumptionPerActivation: number
+
+    /**
+     * Activate the center.
+     * The method should be implemented for each center type that can be activated.
+     * Whereas the output serves for other centers calculation, activation is used to make the center do something.
+     */
+    public abstract activate: () => any
 }
 
 export type CenterID = `center-${string}`

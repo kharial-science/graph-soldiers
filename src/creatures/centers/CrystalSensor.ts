@@ -40,4 +40,6 @@ export default class CrystalSensor extends Center {
 
     public energyConsumptionPerTimeUnit = 1
     public energyConsumptionPerActivation = 0
+
+    public activate = () => {}
 }
