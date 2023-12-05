@@ -11,7 +11,11 @@ export default class Edge {
      * @param {RawVertex} source - The source vertex.
      * @param {RawVertex} target - The target vertex.
      */
-    constructor(public source: RawVertex, public target: RawVertex) {
+    constructor(
+        public id: EdgeID,
+        public source: RawVertex,
+        public target: RawVertex
+    ) {
         this.source = source
         this.target = target
     }
@@ -30,3 +34,4 @@ export default class Edge {
 }
 
 export type RawEdge = [RawVertex, RawVertex]
+export type EdgeID = `edge-${string}`

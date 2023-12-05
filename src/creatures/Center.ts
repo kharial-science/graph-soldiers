@@ -139,7 +139,7 @@ export default abstract class Center {
      * The method should be implemented for each center type that can be activated.
      * Whereas the output serves for other centers calculation, activation is used to make the center do something.
      */
-    public abstract activate: () => any
+    public abstract activate: (...args: any) => any
 }
 
 export type CenterID = `center-${string}`

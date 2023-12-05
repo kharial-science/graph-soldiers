@@ -1,6 +1,6 @@
-import Environment from "../../environment/Environment/Environment"
-import Center, { CenterID, CenterInputWeights } from "../Center"
-import Creature from "../Creature"
+import Environment from "../../../environment/Environment/Environment"
+import Center, { CenterID, CenterInputWeights } from "../../Center"
+import Creature from "../../Creature"
 
 export default class TimeSensor extends Center {
     public readonly type = "sensor" as const
@@ -45,4 +45,6 @@ export default class TimeSensor extends Center {
 
     public energyConsumptionPerTimeUnit = 1
     public energyConsumptionPerActivation = 0
+
+    public activate = () => {}
 }

@@ -12,17 +12,8 @@ export default class Graph {
 
     /**
      * The edges of the graph.
-     * Computed from the informations the vertices hold.
      */
-    public get edges(): Edge[] {
-        const edges = []
-        for (const vertex of this.vertices) {
-            for (const neighbor of vertex.neighborsSource) {
-                edges.push(new Edge(vertex.id, neighbor))
-            }
-        }
-        return edges
-    }
+    public edges: Edge[] = []
 
     /**
      * Creates a graph.
@@ -42,11 +33,29 @@ export default class Graph {
             }
         })
 
+        for (const vertex of this.vertices) {
+            for (const neighbor of vertex.neighborsSource) {
+                edges.push(
+                    new Edge(
+                        `edge-${vertex.id}-${neighbor}`,
+                        vertex.id,
+                        neighbor
+                    )
+                )
+            }
+        }
+
         for (const edge of edges) {
             if (edge instanceof Edge) {
                 this.addEdge(edge)
             } else {
-                this.addEdge(new Edge(edge[0], edge[1]))
+                this.addEdge(
+                    new Edge(
+                        `edge-${edge[0]}-${edge[1]}-${this.edges.length}`,
+                        edge[0],
+                        edge[1]
+                    )
+                )
             }
         }
     }
@@ -72,6 +81,7 @@ export default class Graph {
         this.vertices
             .find((vertex) => vertex.id === edge.target)
             .neighborsTarget.push(edge.source)
+        this.edges.push(edge)
     }
 
     /**
@@ -143,13 +153,11 @@ export default class Graph {
 
         /* We thus need to reimplement the edges from the graph whose source and target
         are actually in the subgraph */
-        for (const vertex of subGraph.vertices) {
-            for (const neighbor of vertex.neighborsSource) {
-                if (subGraph.vertices.find((v) => v.id === neighbor)) {
-                    subGraph.addEdge(new Edge(vertex.id, neighbor))
-                }
-            }
-        }
+        subGraph.edges = this.edges.filter(
+            (edge) =>
+                subGraph.vertices.find((vertex) => vertex.id === edge.source) &&
+                subGraph.vertices.find((vertex) => vertex.id === edge.target)
+        )
 
         return subGraph
     }
@@ -205,7 +213,13 @@ export default class Graph {
         for (const vertex of graph.vertices) {
             for (const neighbor of graph.vertices) {
                 if (Math.random() > edgeThreshold) {
-                    graph.addEdge(new Edge(vertex.id, neighbor.id))
+                    graph.addEdge(
+                        new Edge(
+                            `edge-${vertex.id}-${neighbor.id}-${graph.edges.length}`,
+                            vertex.id,
+                            neighbor.id
+                        )
+                    )
                 }
             }
         }

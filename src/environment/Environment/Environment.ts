@@ -1,3 +1,4 @@
+import Creature from "../../creatures/Creature"
 import Edge, { RawEdge } from "../Graph/Edge"
 import Graph from "../Graph/Graph"
 import Vertex, { RawVertex } from "../Graph/Vertex"
@@ -12,6 +13,10 @@ export default class Environment extends Graph {
      * The vertices of the environment.
      */
     public vertices: EnvironmentVertex[]
+    /**
+     * The edges of the environment.
+     */
+    public edges: EnvironmentEdge[]
 
     /**
      * Creates an environment.
@@ -69,5 +74,24 @@ export default class Environment extends Graph {
      */
     public static createEnvironmentFromGraph(graph: Graph): Environment {
         return new Environment(graph.vertices)
+    }
+
+    /**
+     * Moves a creature from from a vertex or an edge to another vertex or edge.
+     * This method does not check whether the move is possible or not giving the
+     * topology of the environment.
+     * @param creature - The creature to move
+     * @param localization - The initial position of the creature
+     * @param destination - The final position of the creature
+     */
+    public moveCreature = (
+        creature: Creature,
+        localization: EnvironmentVertex | EnvironmentEdge,
+        destination: EnvironmentVertex | EnvironmentEdge
+    ) => {
+        localization.creatures = localization.creatures.filter(
+            (creatureOnVertex) => creatureOnVertex.id !== creature.id
+        )
+        destination.creatures.push(creature)
     }
 }

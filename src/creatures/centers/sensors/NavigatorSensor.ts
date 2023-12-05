@@ -1,7 +1,7 @@
 import Environment from "../../environment/Environment/Environment"
 import EnvironmentEdge from "../../environment/Environment/EnvironmentEdge"
 import random from "../../utils/random"
-import Center, { CenterID, CenterInputWeights, CenterType } from "../Center"
+import Center, { CenterID, CenterInputWeights } from "../Center"
 import Creature from "../Creature"
 
 export default class NavigatorSensor extends Center {

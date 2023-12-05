@@ -29,3 +29,4 @@ export default class Vertex {
 }
 
 export type RawVertex = `vertex-${string}`
+export type VertexID = RawVertex
